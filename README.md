@@ -14,8 +14,16 @@ every file.
 
 ### Actual behavior
 
-`expo-image` is one example of a third-party component that doesn't pass down className prop to a primitive React Native component used, and it's used to demonstrate the bug. However, this bug is reproducible when using `styled()` with any third-party components.
-`expo-image`'s `Image` is passed to `styled()` in `src/init.ts` (this init file is imported in the root layout file to be executed at app start). This should make any `Image` component imported from `expo-image` work with the `className` prop everywhere in the app. However, as the usage of `Image` component in `src/app/index.tsx` demonstrates, this is not the case. `src/app/second-screen.tsx` demonstrates that using the component returned directly by `styled()` works.
+`expo-image` is one example of a third-party component that does not pass the
+`className` prop down to the underlying primitive React Native component, so it
+is used here to demonstrate the bug. However, this bug is reproducible when
+using `styled()` with any third-party components.
+`expo-image`'s `Image` is passed to `styled()` in `src/init.ts`. That init file
+is imported in the root layout so it runs when the app starts. This should make
+`Image` component imported from `expo-image` work with the `className` prop
+everywhere in the app. However, as the `Image` usage in `src/app/index.tsx`
+demonstrates, this is not the case. `src/app/second-screen.tsx` demonstrates
+that using the component returned directly by `styled()` does work.
 
 ### Reproduction points
 

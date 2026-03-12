@@ -9,7 +9,8 @@ const Image = styled(ExpoImage, {
 export default function Screen() {
   return (
     <View className="flex-1 justify-center items-center">
-      {/* className works with the component returned directly by styled() */}
+      {/* Working comparison case: className works when using the component
+          returned directly by styled(). */}
       <Image
         source="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSg1MndL-Xp1JcnqaB0YOqTp6zDjrwYyGKsPA&s"
         className="w-32 h-32"
