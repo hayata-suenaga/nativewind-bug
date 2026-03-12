@@ -19,8 +19,8 @@ export default function HomeScreen() {
         relies on the documented global registration behavior.
       </Link>
 
-      {/* Failing case: this direct expo-image import should accept className
-          because Image is registered in init.ts via styled(Image, ...). */}
+      {/* Bug 1 (failing case): this direct expo-image import should accept
+          className because Image is registered in init.ts via styled(Image, ...). */}
       <Image
         source="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSg1MndL-Xp1JcnqaB0YOqTp6zDjrwYyGKsPA&s"
         className="w-32 h-32"
