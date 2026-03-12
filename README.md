@@ -7,10 +7,10 @@ to the new version of NativeWind.
 
 ### Expected behavior
 
-Based on the NativeWind v5 migration guide, calling `styled(Component, config)`
-should globally register that component so later usages of the same component
-can receive `className` without needing to use the returned wrapper component in
-every file.
+Based on the [NativeWind v5 migration guide](https://www.nativewind.dev/v5/guides/migrate-from-v4#cssinterop--remapprops--replaced-by-styled),
+calling `styled(Component, config)` should globally register that component so
+later usages of the same component can receive `className` without needing to
+use the returned wrapper component in every file.
 
 ### Actual behavior
 
