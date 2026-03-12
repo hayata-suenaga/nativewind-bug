@@ -5,10 +5,7 @@ import { Pressable, Text, View } from "react-native";
 export default function HomeScreen() {
   return (
     <View className="flex-1">
-      {/* Bug 2: group-disabled: (and likely other group attribute variants) is
-          always applied regardless of whether the parent actually has
-          disabled={true}. The text below renders red even though the Pressable
-          has no disabled prop. */}
+      {/* Bug 2: group-disabled: is always applied, see README. */}
       <Pressable className="group">
         <Text className="group-disabled:text-red-500">Hello World</Text>
       </Pressable>
