@@ -1,14 +1,18 @@
-import { FlatList, Text, View } from "react-native";
+import { Image as ExpoImage } from "expo-image";
+import { styled } from "nativewind";
+import { View } from "react-native";
 
 export default function Screen() {
   return (
-    <View className="flex-1">
-      <FlatList
-        data={Array.from({ length: 10 }).map((_, index) => index)}
-        renderItem={({ item }) => <Text>{item as number}</Text>}
-        contentContainerClassName="bg-red-500"
+    <View className="flex-1 justify-center items-center">
+      <Image
+        source="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSg1MndL-Xp1JcnqaB0YOqTp6zDjrwYyGKsPA&s"
+        className="w-32 h-32"
       />
-      <Text>Hello World</Text>
     </View>
   );
 }
+
+const Image = styled(ExpoImage, {
+  className: "style",
+});

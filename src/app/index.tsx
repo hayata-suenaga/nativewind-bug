@@ -1,5 +1,6 @@
+import { Image } from "expo-image";
 import { Link } from "expo-router";
-import { FlatList, Pressable, Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 import "../global.css";
 import "../init";
 
@@ -14,10 +15,9 @@ export default function HomeScreen() {
         Open FlatList Example
       </Link>
 
-      <FlatList
-        data={Array.from({ length: 10 }).map((_, index) => index)}
-        renderItem={({ item }) => <Text>{item as number}</Text>}
-        contentContainerClassName="bg-green-500"
+      <Image
+        source="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSg1MndL-Xp1JcnqaB0YOqTp6zDjrwYyGKsPA&s"
+        className="w-32 h-32"
       />
     </View>
   );
