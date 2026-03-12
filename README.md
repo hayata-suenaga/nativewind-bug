@@ -30,3 +30,26 @@ that using the component returned directly by `styled()` does work.
 - `src/init.ts`: registers `expo-image`'s `Image` with `styled(Image, { className: "style" })`.
 - `src/app/index.tsx`: failing case using the direct `Image` import with `className`.
 - `src/app/second-screen.tsx`: working comparison case using the component returned by `styled()`.
+
+## Bug 2: `group-disabled:` (and likely other group attribute variants) is always applied
+
+### Expected behavior
+
+A `group-disabled:` variant should only apply its styles when the parent
+component that carries the `group` class actually has `disabled={true}`.
+
+### Actual behavior
+
+`group-disabled:` styles are applied unconditionally regardless of
+the parent component's `disabled` prop. In the example below, the text renders
+red even though the `Pressable` has no `disabled` prop:
+
+```tsx
+<Pressable className="group">
+  <Text className="group-disabled:text-red-500">Hello World</Text>
+</Pressable>
+```
+
+### Reproduction points
+
+- `src/app/index.tsx`: the `Pressable`/`Text` pair at the top of the screen demonstrates the bug.
