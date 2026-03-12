@@ -6,7 +6,7 @@ export default function HomeScreen() {
   return (
     <View className="flex-1">
       {/* Bug 2: group-disabled: (and likely other group attribute variants) is
-          always applied on native regardless of whether the parent actually has
+          always applied regardless of whether the parent actually has
           disabled={true}. The text below renders red even though the Pressable
           has no disabled prop. */}
       <Pressable className="group">
