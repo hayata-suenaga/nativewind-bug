@@ -1,56 +1,78 @@
-# Welcome to your Expo app 👋
+# NativeWind v5 Bug Reproductions
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+This repository contains minimal reproducible examples for three bugs related
+to the new version of NativeWind.
 
-## Get started
+## Bug 1: `styled()` global registration does not make `className` available everywhere
 
-1. Install dependencies
+### Expected behavior
 
-   ```bash
-   npm install
-   ```
+Based on the [NativeWind v5 migration guide](https://www.nativewind.dev/v5/guides/migrate-from-v4#cssinterop--remapprops--replaced-by-styled),
+calling `styled(Component, config)` should globally register that component so
+later usages of the same component can receive `className` without needing to
+use the returned wrapper component in every file.
 
-2. Start the app
+### Actual behavior
 
-   ```bash
-   npx expo start
-   ```
+`expo-image` is one example of a third-party component that does not pass the
+`className` prop down to the underlying primitive React Native component, so it
+is used here to demonstrate the bug. However, this bug is reproducible when
+using `styled()` with any third-party components.
+`expo-image`'s `Image` is passed to `styled()` in `src/init.ts`. That init file
+is imported in the root layout so it runs when the app starts. This should make
+`Image` component imported from `expo-image` work with the `className` prop
+everywhere in the app. However, as the `Image` usage in `src/app/index.tsx`
+demonstrates, this is not the case. `src/app/second-screen.tsx` demonstrates
+that using the component returned directly by `styled()` does work.
 
-In the output, you'll find options to open the app in a
+### Reproduction points
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+- `src/init.ts`: registers `expo-image`'s `Image` with `styled(Image, { className: "style" })`.
+- `src/app/index.tsx`: failing case using the direct `Image` import with `className`.
+- `src/app/second-screen.tsx`: working comparison case using the component returned by `styled()`.
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## Bug 2: `group-disabled:` (and likely other group attribute variants) is always applied
 
-## Get a fresh project
+### Expected behavior
 
-When you're ready, run:
+A `group-disabled:` variant should only apply its styles when the parent
+component that carries the `group` class actually has `disabled={true}`.
 
-```bash
-npm run reset-project
+### Actual behavior
+
+`group-disabled:` styles are applied unconditionally regardless of
+the parent component's `disabled` prop. In the example below, the text renders
+red even though the `Pressable` has no `disabled` prop:
+
+```tsx
+<Pressable className="group">
+  <Text className="group-disabled:text-red-500">Hello World</Text>
+</Pressable>
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### Reproduction points
 
-### Other setup steps
+- `src/app/index.tsx`: the `Pressable`/`Text` pair at the top of the screen demonstrates the bug.
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+## Bug 3: `styled()` with generic list components causes TS2590 "union type too complex to represent"
 
-## Learn more
+### Expected behavior
 
-To learn more about developing your project with Expo, look at the following resources:
+Calling `styled(FlatList, { className: "style", contentContainerClassName: "contentContainerStyle" })`
+should work without TypeScript errors.
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+### Actual behavior
 
-## Join the community
+TypeScript emits **TS2590: Expression produces a union type that is too complex
+to represent** on the `styled(FlatList, ...)` call. `FlatList` is a generic
+component (`FlatList<ItemT>`), and when `styled()` attempts to infer the return
+type it constructs a deeply nested union that exceeds TypeScript's internal
+representation limit. A `@ts-expect-error` suppression is required to work
+around it.
 
-Join our community of developers creating universal apps.
+This affects any generic list component with a similar type signature, including
+[`FlashList`](https://shopify.github.io/flash-list/) from `@shopify/flash-list`.
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+### Reproduction points
+
+- `src/init.ts`: the `styled(FlatList, ...)` call with the `@ts-expect-error` suppression demonstrates the error.
