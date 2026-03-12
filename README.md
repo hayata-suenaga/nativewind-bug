@@ -53,3 +53,26 @@ red even though the `Pressable` has no `disabled` prop:
 ### Reproduction points
 
 - `src/app/index.tsx`: the `Pressable`/`Text` pair at the top of the screen demonstrates the bug.
+
+## Bug 3: `styled()` with generic list components causes TS2590 "union type too complex to represent"
+
+### Expected behavior
+
+Calling `styled(FlatList, { className: "style", contentContainerClassName: "contentContainerStyle" })`
+should work without TypeScript errors.
+
+### Actual behavior
+
+TypeScript emits **TS2590: Expression produces a union type that is too complex
+to represent** on the `styled(FlatList, ...)` call. `FlatList` is a generic
+component (`FlatList<ItemT>`), and when `styled()` attempts to infer the return
+type it constructs a deeply nested union that exceeds TypeScript's internal
+representation limit. A `@ts-expect-error` suppression is required to work
+around it.
+
+This affects any generic list component with a similar type signature, including
+[`FlashList`](https://shopify.github.io/flash-list/) from `@shopify/flash-list`.
+
+### Reproduction points
+
+- `src/init.ts`: the `styled(FlatList, ...)` call with the `@ts-expect-error` suppression demonstrates the error.

@@ -8,7 +8,13 @@ styled(Image, {
   className: "style",
 });
 
-// @ts-expect-error - styled(FlatList) produces a union type too complex to represent
+// Bug 3: Calling styled() with FlatList (and any generic list component with a
+// similar type signature, such as FlashList from @shopify/flash-list) causes
+// TypeScript error TS2590: "Expression produces a union type that is too complex
+// to represent." FlatList's generic item type creates a deeply nested union when
+// styled() tries to infer the return type, exceeding TypeScript's internal
+// representation limit.
+// @ts-expect-error TS2590: styled(FlatList) produces a union type too complex to represent
 styled(FlatList, {
   className: "style",
   contentContainerClassName: "contentContainerStyle",
