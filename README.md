@@ -5,6 +5,8 @@ to the new version of NativeWind.
 
 ## Bug 1: `styled()` global registration does not make `className` available everywhere
 
+**Issue:** [nativewind/nativewind#1731](https://github.com/nativewind/nativewind/issues/1731)
+
 ### Expected behavior
 
 Based on the [NativeWind v5 migration guide](https://www.nativewind.dev/v5/guides/migrate-from-v4#cssinterop--remapprops--replaced-by-styled),
@@ -33,6 +35,8 @@ that using the component returned directly by `styled()` does work.
 
 ## Bug 2: `group-disabled:` (and likely other group attribute variants) is always applied
 
+**Issue:** [nativewind/react-native-css#297](https://github.com/nativewind/react-native-css/issues/297)
+
 ### Expected behavior
 
 A `group-disabled:` variant should only apply its styles when the parent
@@ -55,6 +59,8 @@ red even though the `Pressable` has no `disabled` prop:
 - `src/app/index.tsx`: the `Pressable`/`Text` pair at the top of the screen demonstrates the bug.
 
 ## Bug 3: `styled()` with generic list components causes TS2590 "union type too complex to represent"
+
+**Issue:** [nativewind/nativewind#1732](https://github.com/nativewind/nativewind/issues/1732)
 
 ### Expected behavior
 
